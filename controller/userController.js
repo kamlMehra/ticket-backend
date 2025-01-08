@@ -2,16 +2,40 @@ import User from "../models/userModel.js";
 
 export const create = async (req, res) => {
   try {
-    const newUser = new ticket() - bookings(req.body);
-    const { mobileNumber } = newUser;
-    // const useExist = await User.findOne({ mobileNumber });
-    // if (useExist) {
-    //   return res.status(400).json({ message: "User Already Exist." });
-    // }
-    const savedTicket = await newUser.save();
-    res.status(200).json(savedTicket);
+    const {startDate, busNumber, seatNumber, endDate, visitPurpose, toLocation , fromLocation, mobileNumber,ticketPrice,name
+    } = req.body;
+    if(
+      !startDate || !busNumber || !seatNumber || !endDate || !visitPurpose || !toLocation || !fromLocation || !mobileNumber || !ticketPrice, !name
+    ){
+      return res.status(400).json({message: "All fields are required"})
+    }
+
+
+    const isAlreadyExits = await User.findOne({busNumber, startDate, seatNumber});
+    if(isAlreadyExits){
+      return res.status(400).json({message: "Seat already booked"})
+    }
+
+    const createNewTickets = await User.create({
+      busNumber,
+      startDate,
+      seatNumber,
+      endDate,
+      visitPurpose,
+      toLocation,
+      fromLocation,
+      mobileNumber,
+      ticketPrice,
+      name
+    });
+
+    if(!createNewTickets){
+      return res.status(400).json({message: "Failed to create ticket"})
+    }
+   return  res.status(200).json(createNewTickets);
+   
   } catch (error) {
-    res.status(500).json({ errorMessage: error });
+   return res.status(500).json({ errorMessage: error });
   }
 };
 

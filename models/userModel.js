@@ -12,7 +12,7 @@ const userSchema = new mongoose.Schema(
       required: true,
       validate: {
         validator: function (v) {
-          return /^\d{10}$/.test(v); 
+          return /^\d{10}$/.test(v);
         },
         message: `Please enter a valid number!`,
       },
@@ -24,21 +24,26 @@ const userSchema = new mongoose.Schema(
     },
     busNumber: {
       type: Number,
-      required: true, 
+      required: true,
     },
     seatNumber: {
-      type: Array,
+      type: Array, // Keeping it as an array for multiple seat bookings
       required: true,
-      validate: {
-        validator: async function (seatNumbers) {
-          const existingSeats = await mongoose
-            .model("Ticket-booking")
-            .find({ busNumber: this.busNumber, seatNumber: { $in: seatNumbers } });
+      // validate: {
+      //   validator: async function (seatNumbers) {
+      //     const TicketBooking = mongoose.model("TicketBooking"); // Use the correct model name
 
-          return existingSeats.length === 0; 
-        },
-        message: `The selected seats are already booked for this bus. Please choose different seats.`,
-      },
+      //     // Check for existing bookings with the same busNumber, seatNumber, and startDate
+      //     const existingSeats = await TicketBooking.find({
+      //       busNumber: this.busNumber,
+      //       startDate: this.startDate, // Include startDate in the query
+      //       seatNumber: { $in: seatNumbers },
+      //     });
+
+      //     return existingSeats.length === 0; // Validation passes if no conflicts are found
+      //   },
+      //   message: `The selected seats are already booked for this bus on the specified date. Please choose different seats or date.`,
+      // },
     },
     fromLocation: {
       type: String,
@@ -56,10 +61,15 @@ const userSchema = new mongoose.Schema(
       type: Date,
       required: true,
     },
+    visitPurpose:{
+      type: String,
+      required: true,
+    }
   },
   {
     timestamps: true,
   }
 );
 
-export default mongoose.model("Ticket-booking", userSchema);
+
+export default mongoose.model("TicketBooking", userSchema);
