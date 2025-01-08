@@ -1,4 +1,5 @@
 import User from "../models/userModel.js";
+import Bus from "../models/busModel.js";
 
 export const create = async (req, res) => {
   try {
@@ -11,7 +12,7 @@ export const create = async (req, res) => {
     }
 
 
-    const isAlreadyExits = await User.findOne({busNumber, startDate, seatNumber});
+    const isAlreadyExits = await User.findOne({busNumber, seatNumber});
     if(isAlreadyExits){
       return res.status(400).json({message: "Seat already booked"})
     }
@@ -38,6 +39,31 @@ export const create = async (req, res) => {
    return res.status(500).json({ errorMessage: error });
   }
 };
+
+export const createTicket = async(req,res)=>{
+  try {
+    const {name, mobileNumber, busNumber, seatNumber} = req.body;
+    if(!name || !mobileNumber || !busNumber || !seatNumber){
+      return res.status(400).json({message: "All fields are required"})
+    }
+    const isAlreadyExits = await User.findOne({seatNumber,busNumber});
+    if(isAlreadyExits){
+      return res.status(400).json({message: "seat already booked"})
+    }   
+    const createNewTicket = await User.create({
+      name,
+      mobileNumber,
+      busNumber,
+      seatNumber
+    })
+    if(!createNewTicket){
+      return res.status(400).json({message: "Failed to create ticket"})
+    }
+    res.status(200).json(createNewTicket);
+  } catch (error) {
+    res.status(500).json({errorMessage: error.message})
+  }
+}
 
 export const getallticket = async (req, res) => {
   try {
@@ -95,3 +121,87 @@ export const cancelTicket = async(req,res)=>{
     res.status(500).json({errorMessage: error.message})
   }
 }
+
+
+export const getBus = async(req,res)=>{
+  try {
+    const bus = await Bus.find();
+    if(!bus){
+      return res.status(404).json({message: "Bus not Found!"});
+    }
+    res.status(200).json(bus);
+  } catch (error) {
+    res.status(500).json({errorMessage: error.message})
+  }
+} 
+
+export const getBusByNumber = async(req,res)=>{
+  try {
+    const busNumber = req.params.busNumber;
+    const bus = await Bus.find({busNumber});
+    if(!bus){
+      return res.status(404).json({message: "Bus not Found!"});
+    }
+    res.status(200).json(bus);
+  } catch (error) {
+    res.status(500).json({errorMessage: error.message})
+  }
+}
+
+export const addBus = async(req,res)=>{
+  try {
+    const {busNumber, totalSeat, availableSeat, ticketPrice, startDate, startTime, fromLocation, toLocation, visitPurpose} = req.body;
+    if(!busNumber || !totalSeat || !availableSeat || !ticketPrice || !startDate || !startTime || !fromLocation || !toLocation){
+      return res.status(400).json({message: "All fields are required"})
+    } 
+    const isAlreadyExits = await Bus.findOne({busNumber});
+    if(isAlreadyExits){
+      return res.status(400).json({message: "Bus already exists"})
+    } 
+    const createNewBus = await Bus.create({
+      busNumber,
+      totalSeat,
+      availableSeat,
+      ticketPrice,
+      startDate,
+      startTime,
+      fromLocation,
+      toLocation,
+      visitPurpose
+    })  
+    if(!createNewBus){
+      return res.status(400).json({message: "Failed to create bus"})
+    }
+    res.status(200).json(createNewBus);
+  } catch (error) {
+    res.status(500).json({errorMessage: error.message})
+  }
+} 
+
+export const updateBus = async(req,res)=>{
+  try {
+    const id = req.params.id;
+    const bus = await Bus.findById(id);
+    if(!bus){
+      return res.status(404).json({message: "Bus not Found!"});
+    }
+    const updatedBus = await Bus.findByIdAndUpdate(id, req.body, {new: true});
+    res.status(200).json(updatedBus);
+  } catch (error) {
+    res.status(500).json({errorMessage: error.message})
+  }
+}   
+
+export const deleteBus = async(req,res)=>{
+  try {
+    const id = req.params.id;
+    const bus = await Bus.findById(id);
+    if(!bus){
+      return res.status(404).json({message: "Bus not Found!"});
+    }
+    const deletedBus = await Bus.findByIdAndDelete(id);
+    res.status(200).json(deletedBus);
+  } catch (error) {
+    res.status(500).json({errorMessage: error.message})
+  }
+} 
