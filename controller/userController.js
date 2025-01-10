@@ -59,7 +59,7 @@ export const createTicket = async(req,res)=>{
     if(!createNewTicket){
       return res.status(400).json({message: "Failed to create ticket"})
     }
-    res.status(200).json(createNewTicket);
+   return  res.status(200).json(createNewTicket);
   } catch (error) {
     res.status(500).json({errorMessage: error.message})
   }

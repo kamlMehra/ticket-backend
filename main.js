@@ -3,15 +3,20 @@ import dotenv from "dotenv";
 import mongoose from "mongoose";
 import bodyParser from "body-parser";
 import route from "./routes/userRoute.js";
+import cors from "cors";
+
 
 const app = express();
 app.use(bodyParser.json());
 dotenv.config();
 
+app.use(cors({
+  origin:"*"
+}));
 const PORT = process.env.PORT || 3000;
 
 app.get("/", (req, res) => {
-  res.send("hello ! World ");
+  res.sendStatus(200).send("hello ! World ");
 });
 
 //  MongoDB Connection
