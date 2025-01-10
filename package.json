@@ -2,11 +2,11 @@
   "name": "ticket-backend",
   "version": "1.0.0",
   "description": "Ticket Booking Backend",
-  "main": "main.js",
+  "index": "index.js",
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon main.js"
+    "start": "nodemon index.js"
   },
   "author": "Kamal Codes",
   "license": "ISC",
