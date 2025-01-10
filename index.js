@@ -19,8 +19,6 @@ app.get("/", (req, res) => {
   res.sendStatus(200).send("hello ! World ");
 });
 
-//  MongoDB Connection
-
 const MongoConnect = process.env.MONGO_URI;
 mongoose
   .connect(MongoConnect)
