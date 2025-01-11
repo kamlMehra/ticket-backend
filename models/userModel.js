@@ -26,7 +26,7 @@ const userSchema = new mongoose.Schema(
       required: true,
       validate: {
         validator: async function (seatNumbers) {
-          const TicketBooking = mongoose.model("TicketBooking"); // Use the correct model name
+          const TicketBooking = mongoose.model("TicketBooking"); 
 
           // Check for existing bookings with the same busNumber, seatNumber, and startDate
           const existingSeats = await TicketBooking.find({
