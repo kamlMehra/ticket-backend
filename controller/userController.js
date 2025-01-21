@@ -205,3 +205,87 @@ export const deleteBus = async(req,res)=>{
     res.status(500).json({errorMessage: error.message})
   }
 } 
+
+export const deleteTicketsByBusNumber = async (req, res) => {
+  try {
+    const busNumber = req.params.busNumber;
+
+    // Check if any tickets exist for the given bus number
+    const tickets = await User.find({ busNumber });
+    console.log(tickets)
+    if (tickets.length === 0) {
+      return res.status(404).json({ message: "No tickets found for this bus number!" });
+    }
+
+    // Delete tickets
+    const deletedTickets = await User.deleteMany({ busNumber });
+
+    // Send response after deletion
+    return res.status(200).json({
+      message: `${deletedTickets.deletedCount} ticket(s) deleted successfully.`,
+    });
+  } catch (error) {
+    // Handle any errors and return the response once
+    return res.status(500).json({ errorMessage: error.message });
+  }
+};
+
+// export const updateTicketsBusNumber = async (req, res) => {
+//   try {
+//     const busNumber = req.params.busNumber;
+
+//     // Validate input
+//     if (!oldBusNumber || !newBusNumber) {
+//       return res.status(400).json({ message: "Both old and new bus numbers are required." });
+//     }
+
+//     // Check if any tickets exist with the old bus number
+//     const tickets = await User.find({ busNumber: oldBusNumber });
+//     if (tickets.length === 0) {
+//       return res.status(404).json({ message: "No tickets found with the given old bus number." });
+//     }
+
+//     // Update bus number for all matching tickets
+//     console.log(tickets);
+//     // const updatedTickets = await tickets.updateMany(
+//     //   { busNumber: oldBusNumber },
+//     //   { $set: { busNumber: newBusNumber } }
+//     // );
+
+//     const updatedTickets = await User.updateMany(
+//       { busNumber: oldBusNumber },
+//       { busNumber: newBusNumber }
+//     )
+
+//     return res.status(200).json({
+//       message: `${updatedTickets.modifiedCount} ticket(s) updated successfully.`,
+//     });
+//   } catch (error) {
+//     return res.status(500).json({ errorMessage: error.message });
+//   }
+// };
+
+export const updateTicketsBusNumber = async (req, res) => {
+  try {
+    const busNumber = req.params.busNumber;
+    const {newBusNumber} = req.body;
+
+    if(!busNumber || !newBusNumber){
+      return res.status(400).json({message: "Bus number is required"})
+    }
+
+    const tickets = await User.find({busNumber})  
+    console.log(tickets)
+    if(tickets.length === 0){
+      return res.status(404).json({message: "No tickets found with the given bus number"})
+    }
+
+    const updatedTickets = await User.updateMany({busNumber}, {busNumber: newBusNumber}, {new: true})  
+    return res.status(200).json({
+      message: `${updatedTickets.modifiedCount} ticket(s) updated successfully.`,
+    });
+  } catch (error) {
+    return res.status(500).json({errorMessage: error.message})
+  }
+}   
+    
