@@ -90,6 +90,19 @@ export const getTicketsByNumber = async (req, res) => {
   }
 };
 
+export const getTicketsByBusNumber = async (req, res) => {
+  try {
+    const busnumber = req.params.busNumber;
+    const tickets = await User.find({ busNumber: busnumber });
+    if (tickets.length === 0) {
+      return res.status(404).json({ message: "Tickets not Found!" });
+    }
+    res.status(200).json(tickets);
+  } catch (error) {
+    res.status(500).json({ errorMessage: error.message });
+  }
+};
+
 export const update = async (req, res) => {
   try {
     const id = req.params.id;

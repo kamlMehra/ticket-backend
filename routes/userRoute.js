@@ -1,7 +1,7 @@
 import express from "express";
 
 
-import { cancelTicket, create, getallticket, getTicketsByNumber, update, getBus, getBusByNumber, addBus, updateBus, deleteBus, deleteTicketsByBusNumber, updateTicketsBusNumber } from "../controller/userController.js";
+import { cancelTicket, create, getallticket, getTicketsByNumber, update, getBus, getBusByNumber, addBus, updateBus, deleteBus, deleteTicketsByBusNumber, updateTicketsBusNumber, getTicketsByBusNumber } from "../controller/userController.js";
 
 const route = express.Router();
 
@@ -16,7 +16,7 @@ route.post("/addbus", addBus);
 route.put("/updatebus/:id", updateBus);
 route.delete("/deletebus/:id", deleteBus);
 route.delete("/tickets/:busNumber", deleteTicketsByBusNumber);
-
+route.get("/ticketbybus/:busNumber", getTicketsByBusNumber);
 route.put("/tickets/:busNumber", updateTicketsBusNumber);
 
 export default route;
